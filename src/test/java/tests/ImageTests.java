@@ -24,7 +24,6 @@ public class ImageTests extends BaseTest {
         byte[] byteArray = getFileContent ( );
         encodedFile = Base64.getEncoder ( ).encodeToString (byteArray);
     }
-
     @Test
     void uploadFileTest ( ) {
         uploadedImageId = given ( )
@@ -42,8 +41,6 @@ public class ImageTests extends BaseTest {
                 .jsonPath ( )
                 .getString ("data.deletehash");
     }
-
-
     @Test
     void uploadFileImageTest ( ) {
         uploadedImageId = given ( )
