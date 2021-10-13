@@ -1,25 +1,33 @@
-package tests;
+package ru.annachemic.tests;
 
+import io.restassured.RestAssured;
+import io.restassured.builder.ResponseSpecBuilder;
+import io.restassured.http.ContentType;
 import io.restassured.response.Response;
+import io.restassured.specification.ResponseSpecification;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.lessThanOrEqualTo;
 import static org.hamcrest.core.IsEqual.equalTo;
+import static ru.annachemic.Endpoints.GET_ACCOUNT;
 
 public class AccountTests extends BaseTest{
+
+
+
+
+
     @Test
     void getAccountInfoTest() {
         given()
                 .header("Authorization", token)
                 .when()
-                .get("https://api.imgur.com/3/account/{username}", username)
-                .then()
-                .statusCode(200);
+                .get("https://api.imgur.com/3/account/{username}", username);
     }
     @Test
     void getAccountInfoWithLoggingTest() {
@@ -65,9 +73,20 @@ public class AccountTests extends BaseTest{
                 .log()
                 .uri()
                 .when()
-                .get("https://api.imgur.com/3/account/{username}", username)
+                .get(GET_ACCOUNT, username)
                 .prettyPeek();
         assertThat(response.jsonPath().get("data.url"), equalTo(username));
+    }
+
+    @Test
+    void getAccountInfoWithoutTokenTest() {
+        ResponseSpecification spec = new ResponseSpecBuilder()
+                .expectStatusCode(401)
+                .build();
+        given()
+                .when()
+                .get("https://api.imgur.com/3/account/{username}", username)
+        ;
     }
 
     private static void getProperties(){
